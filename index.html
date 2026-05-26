@@ -3,302 +3,460 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>营养小达人闯关检测</title>
+  <title>小小营养侦探训练营</title>
   <style>
-    :root {
-      --green: #41b883;
-      --deep: #1f7a55;
-      --light: #eefaf3;
-      --yellow: #ffe08a;
-      --orange: #ff9f43;
-      --red: #ff6b6b;
-      --blue: #4dabf7;
-      --text: #243b33;
-      --muted: #6b7b75;
-      --white: #ffffff;
-      --shadow: 0 16px 36px rgba(31, 122, 85, 0.18);
+    :root{
+      --green:#42b883;
+      --deep:#167052;
+      --light:#eaf8ef;
+      --blue:#4dabf7;
+      --blue2:#eaf4ff;
+      --orange:#ff9f43;
+      --red:#ff6b6b;
+      --text:#243b33;
+      --muted:#6b7b75;
+      --line:#dcebe3;
+      --shadow:0 18px 42px rgba(27,109,78,.18);
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(160deg, #dff7e9 0%, #fff8df 55%, #e6f7ff 100%);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+      background:linear-gradient(150deg,#dcf8e7 0%,#fff8df 54%,#eaf6ff 100%);
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden;
     }
-
-    .page {
-      width: 100%;
-      min-height: 100vh;
-      padding: 22px 18px 32px;
-      display: none;
-      align-items: center;
-      justify-content: center;
+    .page{
+      min-height:100vh;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px 16px 28px;
     }
-
-    .page.active { display: flex; }
-
-    .card {
-      width: min(460px, 100%);
-      background: rgba(255, 255, 255, 0.94);
-      border-radius: 28px;
-      padding: 26px 22px;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.7);
+    .page.active{display:flex}
+    .card{
+      width:min(560px,100%);
+      background:rgba(255,255,255,.95);
+      border:2px solid rgba(255,255,255,.8);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:24px 20px;
+      position:relative;
+      overflow:hidden;
     }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: rgba(65, 184, 131, 0.12);
-      top: -80px;
-      right: -70px;
-      z-index: 0;
+    .card:before{
+      content:"";
+      position:absolute;
+      right:-70px;
+      top:-80px;
+      width:190px;
+      height:190px;
+      background:rgba(66,184,131,.12);
+      border-radius:50%;
     }
-
-    .content { position: relative; z-index: 1; }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--light);
-      color: var(--deep);
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 14px;
+    .content{position:relative;z-index:1}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:var(--light);
+      color:var(--deep);
+      font-weight:900;
+      font-size:14px;
+      border-radius:999px;
+      padding:8px 12px;
     }
-
-    h1, h2, h3 { margin: 0; }
-
-    h1 {
-      font-size: 34px;
-      line-height: 1.14;
-      margin-top: 18px;
-      letter-spacing: 1px;
+    h1,h2,h3{margin:0}
+    h1{font-size:33px;line-height:1.18;letter-spacing:.5px;margin:18px 0 12px}
+    h2{font-size:24px;line-height:1.25;margin:12px 0;color:var(--deep)}
+    p{margin:0}
+    .subtitle{
+      color:var(--muted);
+      font-size:15.5px;
+      line-height:1.7;
+      margin:12px 0 18px;
     }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.7;
-      margin: 14px 0 20px;
+    .btn{
+      width:100%;
+      border:0;
+      border-radius:18px;
+      padding:14px 16px;
+      background:var(--green);
+      color:white;
+      font-size:17px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 10px 18px rgba(66,184,131,.28);
+      transition:transform .12s ease, opacity .12s ease;
+      margin-top:10px;
     }
-
-    .hero-foods {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin: 20px 0;
+    .btn:active{transform:scale(.98)}
+    .btn.secondary{background:#eef8f3;color:var(--deep);box-shadow:none}
+    .btn.blue{background:var(--blue);box-shadow:0 10px 18px rgba(77,171,247,.24)}
+    .btn.orange{background:var(--orange);box-shadow:0 10px 18px rgba(255,159,67,.24)}
+    .btn.disabled{opacity:.45;pointer-events:none}
+    .small-note{
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      line-height:1.6;
+      margin-top:12px;
     }
-
-    .food {
-      min-height: 72px;
-      border-radius: 20px;
-      background: #f7fff9;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      border: 1px solid #d9f0e3;
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .mission{
+      border:1px solid var(--line);
+      background:#fbfffd;
+      border-radius:18px;
+      padding:13px 12px;
+      min-height:86px;
     }
-
-    .food span {
-      margin-top: 4px;
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 700;
+    .mission .icon{font-size:26px;margin-bottom:6px}
+    .mission strong{display:block;font-size:14.5px;color:var(--deep);margin-bottom:4px}
+    .mission span{font-size:12px;color:var(--muted);line-height:1.45}
+    .progress-wrap{margin:16px 0 10px}
+    .progress-label{
+      display:flex;
+      justify-content:space-between;
+      font-size:12.5px;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:8px;
     }
-
-    .btn {
-      width: 100%;
-      border: 0;
-      border-radius: 18px;
-      padding: 15px 18px;
-      background: var(--green);
-      color: var(--white);
-      font-size: 18px;
-      font-weight: 800;
-      box-shadow: 0 10px 18px rgba(65, 184, 131, 0.28);
-      cursor: pointer;
-      transition: transform .15s ease, opacity .15s ease;
+    .progress{
+      height:10px;
+      background:#e8f1ed;
+      border-radius:999px;
+      overflow:hidden;
     }
-
-    .btn:active { transform: scale(0.98); }
-    .btn.secondary { background: #edf8f2; color: var(--deep); box-shadow: none; margin-top: 10px; }
-
-    .progress-wrap { margin: 18px 0 10px; }
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
+    .progress-bar{
+      height:100%;
+      width:0;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--green),var(--orange));
+      transition:width .3s ease;
     }
-    .progress {
-      height: 10px;
-      background: #e8f1ed;
-      border-radius: 999px;
-      overflow: hidden;
+    .question{
+      font-size:21px;
+      line-height:1.45;
+      font-weight:900;
+      margin:14px 0 16px;
     }
-    .progress-bar {
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, var(--green), var(--orange));
-      border-radius: 999px;
-      transition: width .3s ease;
+    .options{display:grid;gap:11px}
+    .option{
+      border:2px solid #e4eee9;
+      background:#fff;
+      padding:13px 14px;
+      border-radius:17px;
+      text-align:left;
+      color:var(--text);
+      font-size:15.5px;
+      font-weight:800;
+      line-height:1.45;
+      cursor:pointer;
+      transition:all .16s ease;
     }
-
-    .level-title {
-      font-size: 20px;
-      color: var(--deep);
-      font-weight: 900;
-      margin-top: 10px;
+    .option.correct{border-color:var(--green);background:#eafaf1}
+    .option.wrong{border-color:var(--red);background:#fff0f0}
+    .option.disabled{pointer-events:none}
+    .feedback{
+      display:none;
+      margin-top:14px;
+      border:1px solid #dceee4;
+      background:#f6fbf8;
+      border-radius:18px;
+      padding:13px 14px;
+      font-size:14.5px;
+      line-height:1.65;
     }
-
-    .question {
-      font-size: 23px;
-      line-height: 1.42;
-      font-weight: 900;
-      margin: 14px 0 18px;
+    .feedback.show{display:block}
+    .feedback strong{color:var(--deep)}
+    .classify-source{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:8px;
     }
-
-    .options { display: grid; gap: 12px; }
-
-    .option {
-      border: 2px solid #e4eee9;
-      background: #ffffff;
-      padding: 14px 14px;
-      border-radius: 18px;
-      text-align: left;
-      font-size: 16px;
-      line-height: 1.45;
-      font-weight: 700;
-      color: var(--text);
-      cursor: pointer;
-      transition: all .16s ease;
+    .draggable-food{
+      border:2px solid #e4eee9;
+      background:#fff;
+      border-radius:18px;
+      min-height:66px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:4px;
+      font-weight:900;
+      cursor:grab;
+      user-select:none;
+      touch-action:none;
+      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      padding:10px;
     }
-
-    .option:hover { border-color: #b9e8cd; }
-    .option.correct { border-color: var(--green); background: #eafaf1; }
-    .option.wrong { border-color: var(--red); background: #fff0f0; }
-    .option.disabled { pointer-events: none; }
-
-    .feedback {
-      margin-top: 16px;
-      padding: 14px 15px;
-      border-radius: 18px;
-      background: #f6fbf8;
-      border: 1px solid #dceee4;
-      display: none;
-      line-height: 1.65;
-      font-size: 15px;
-      color: var(--text);
+    .draggable-food:active{cursor:grabbing}
+    .draggable-food.dragging-source{
+      opacity:.45;
+      border-style:dashed;
     }
-
-    .feedback.show { display: block; }
-    .feedback strong { color: var(--deep); }
-
-    .score-circle {
-      width: 150px;
-      height: 150px;
-      margin: 22px auto 12px;
-      border-radius: 50%;
-      background: conic-gradient(var(--green) 0deg, var(--green) 0deg, #e8f1ed 0deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
+    .drag-ghost{
+      position:fixed;
+      z-index:9999;
+      width:120px;
+      pointer-events:none;
+      border:2px solid var(--green);
+      background:#eafaf1;
+      border-radius:18px;
+      min-height:66px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:4px;
+      font-weight:900;
+      box-shadow:0 12px 24px rgba(0,0,0,.18);
+      transform:translate(-50%,-50%);
+      padding:10px;
     }
-
-    .score-circle::after {
-      content: "";
-      position: absolute;
-      width: 118px;
-      height: 118px;
-      background: white;
-      border-radius: 50%;
+    .zone-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:14px;
     }
-
-    .score-text {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      font-weight: 900;
-      color: var(--deep);
+    .drop-zone{
+      border:2px dashed #cfe3d9;
+      background:#fbfffd;
+      border-radius:18px;
+      min-height:110px;
+      padding:10px;
+      transition:all .12s ease;
     }
-
-    .score-text .num { font-size: 34px; display: block; }
-    .result-title { text-align: center; font-size: 28px; margin-top: 8px; }
-    .result-desc { text-align: center; color: var(--muted); line-height: 1.7; margin: 12px 0 18px; }
-
-    .review {
-      background: #f8fffb;
-      border-radius: 18px;
-      padding: 14px;
-      margin: 16px 0;
-      border: 1px solid #e2f0e8;
+    .drop-zone.active{
+      border-color:var(--blue);
+      background:#eaf4ff;
+      transform:scale(1.01);
     }
-    .review-title { font-weight: 900; color: var(--deep); margin-bottom: 8px; }
-    .review ul { padding-left: 20px; margin: 8px 0 0; color: var(--muted); line-height: 1.7; }
-
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 14px;
-      opacity: .85;
-      top: -20px;
-      animation: fall 2.7s linear forwards;
-      z-index: 5;
-      border-radius: 3px;
+    .zone-title{
+      text-align:center;
+      font-weight:900;
+      color:var(--deep);
+      margin-bottom:8px;
+      font-size:14px;
     }
-    @keyframes fall {
-      to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    .placed-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      align-items:flex-start;
+      min-height:50px;
     }
-
-    .small-note {
-      margin-top: 14px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 12px;
-      line-height: 1.6;
+    .placed-chip{
+      background:#eafaf1;
+      border:1px solid #cfe9da;
+      color:var(--deep);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      font-weight:800;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
     }
-
-    @media (max-width: 380px) {
-      h1 { font-size: 30px; }
-      .question { font-size: 20px; }
-      .card { padding: 22px 18px; border-radius: 24px; }
-      .food { min-height: 62px; font-size: 26px; }
+    .hint-empty{
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+      width:100%;
+      padding-top:8px;
+    }
+    .emoji{font-size:26px}
+    .experiment-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    .sample{
+      border:2px solid #e4eee9;
+      background:#fff;
+      border-radius:18px;
+      padding:12px 8px;
+      text-align:center;
+      min-height:86px;
+      cursor:pointer;
+      transition:all .2s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .sample .emoji{display:block;font-size:30px}
+    .sample .name{font-size:14px;font-weight:900;margin-top:4px}
+    .sample.blue-react{border-color:#1c7ed6;background:#e7f5ff;box-shadow:inset 0 0 0 999px rgba(29,114,215,.08)}
+    .sample.no-react{border-color:#ced4da;background:#f8f9fa}
+    .drop-icon{
+      position:absolute;
+      top:8px;
+      right:8px;
+      font-size:18px;
+      opacity:0;
+      transform:translateY(-12px);
+      transition:all .25s ease;
+    }
+    .sample.tested .drop-icon{opacity:1;transform:translateY(0)}
+    .breakfast-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:9px;
+      margin-top:10px;
+    }
+    .select-card{
+      border:2px solid #e4eee9;
+      background:white;
+      border-radius:18px;
+      padding:8px 6px;
+      text-align:center;
+      font-weight:900;
+      cursor:pointer;
+      min-height:76px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:4px;
+      transition:all .15s ease;
+    }
+    .select-card.selected{
+      border-color:var(--green);
+      background:#eafaf1;
+      transform:translateY(-1px);
+    }
+    .summary-box{
+      background:#f8fffb;
+      border:1px solid #e2f0e8;
+      border-radius:20px;
+      padding:14px;
+      margin:14px 0;
+    }
+    .score-circle{
+      width:150px;
+      height:150px;
+      margin:18px auto 10px;
+      border-radius:50%;
+      background:conic-gradient(var(--green) 0deg,var(--green) 0deg,#e8f1ed 0deg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+    .score-circle:after{
+      content:"";
+      position:absolute;
+      width:118px;
+      height:118px;
+      background:white;
+      border-radius:50%;
+    }
+    .score-text{
+      position:relative;
+      z-index:1;
+      text-align:center;
+      font-weight:900;
+      color:var(--deep);
+    }
+    .score-text .num{font-size:36px;display:block}
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+    .pill{
+      background:#eef8f3;
+      color:var(--deep);
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:12.5px;
+      font-weight:800;
+    }
+    input.nickname{
+      width:100%;
+      border:2px solid #e4eee9;
+      border-radius:16px;
+      padding:13px 14px;
+      font-size:16px;
+      outline:none;
+      margin-top:10px;
+    }
+    input.nickname:focus{border-color:var(--green)}
+    .rank-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:14px;
+      font-size:13px;
+      overflow:hidden;
+      border-radius:14px;
+    }
+    .rank-table th,.rank-table td{
+      padding:10px 6px;
+      border-bottom:1px solid #edf2ef;
+      text-align:center;
+    }
+    .rank-table th{
+      background:#eef8f3;
+      color:var(--deep);
+      font-weight:900;
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%);
+      background:rgba(31,41,55,.92);
+      color:white;
+      border-radius:999px;
+      padding:10px 16px;
+      font-size:14px;
+      z-index:20;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease, transform .2s ease;
+      max-width:92%;
+      text-align:center;
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+    .confetti{
+      position:fixed;
+      width:10px;
+      height:14px;
+      top:-20px;
+      opacity:.9;
+      border-radius:3px;
+      z-index:15;
+      animation:fall 2.8s linear forwards;
+    }
+    @keyframes fall{
+      to{transform:translateY(110vh) rotate(720deg);opacity:0}
+    }
+    @media (max-width:380px){
+      h1{font-size:29px}
+      .question{font-size:19px}
+      .card{padding:21px 16px;border-radius:24px}
+      .breakfast-grid{grid-template-columns:repeat(2,1fr)}
     }
   </style>
 </head>
 <body>
   <main id="app">
-    <section class="page active" id="startPage">
+    <section class="page active" id="homePage">
       <div class="card">
         <div class="content">
-          <div class="badge">🍽️ 微课课堂检测</div>
-          <h1>营养小达人<br/>闯关挑战</h1>
-          <p class="subtitle">完成 5 道小题，检验你是否掌握了食物营养、淀粉检测和合理饮食的知识。</p>
-          <div class="hero-foods">
-            <div class="food">🥚<span>蛋白质</span></div>
-            <div class="food">🍚<span>淀粉</span></div>
-            <div class="food">🥦<span>维生素</span></div>
-            <div class="food">🥛<span>无机盐</span></div>
+          <div class="badge">🕵️ 国赛升级版 · 游戏化学习</div>
+          <h1>小小营养侦探训练营</h1>
+          <p class="subtitle">完成营养知识闯关、食物分类、淀粉实验和早餐搭配挑战，看看你能否成为金牌营养侦探！</p>
+          <div class="grid2">
+            <div class="mission"><div class="icon">📚</div><strong>知识闯关</strong><span>检测营养基础知识</span></div>
+            <div class="mission"><div class="icon">🥗</div><strong>营养小屋</strong><span>拖拽食物进行分类</span></div>
+            <div class="mission"><div class="icon">🧪</div><strong>虚拟实验</strong><span>模拟淀粉检测过程</span></div>
+            <div class="mission"><div class="icon">🏆</div><strong>排行榜</strong><span>保存成绩与称号</span></div>
           </div>
-          <button class="btn" onclick="startQuiz()">开始闯关</button>
-          <p class="small-note">建议观看完微课后作答。</p>
+          <button class="btn" onclick="startAll()">开始挑战</button>
+          <button class="btn secondary" onclick="showRankPage()">查看排行榜</button>
+          <p class="small-note">总分100分｜知识闯关40分 + 营养小屋30分 + 淀粉实验18分 + 早餐搭配12分</p>
         </div>
       </div>
     </section>
@@ -306,16 +464,64 @@
     <section class="page" id="quizPage">
       <div class="card">
         <div class="content">
-          <div class="badge" id="levelBadge">第 1 关</div>
+          <div class="badge">任务一 · 营养知识闯关</div>
           <div class="progress-wrap">
-            <div class="progress-label"><span id="progressText">1 / 5</span><span id="scoreText">得分 0</span></div>
-            <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+            <div class="progress-label"><span id="quizProgress">1 / 5</span><span id="scoreLabel">总分 0</span></div>
+            <div class="progress"><div class="progress-bar" id="quizBar"></div></div>
           </div>
-          <div class="level-title" id="levelTitle">营养成分我会认</div>
           <div class="question" id="questionText"></div>
           <div class="options" id="optionsBox"></div>
           <div class="feedback" id="feedbackBox"></div>
-          <button class="btn secondary" id="nextBtn" style="display:none" onclick="nextQuestion()">下一题</button>
+          <button class="btn secondary" id="nextQuestionBtn" style="display:none" onclick="nextQuestion()">下一题</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="classifyPage">
+      <div class="card">
+        <div class="content">
+          <div class="badge">任务二 · 营养小屋</div>
+          <h2>把食物拖到对应的小框里</h2>
+          <p class="subtitle">按住下方食物卡片并拖动，松手放到对应的营养小屋。支持手机触屏拖拽。</p>
+          <div class="progress-wrap">
+            <div class="progress-label"><span id="classifyProgress">0 / 10</span><span id="classifyScore">分类得分 0</span></div>
+            <div class="progress"><div class="progress-bar" id="classifyBar"></div></div>
+          </div>
+          <div class="classify-source" id="foodCards"></div>
+          <div class="zone-grid" id="zones"></div>
+          <div class="feedback show" id="classifyFeedback"><strong>提示：</strong>拖动食物卡片到对应营养小屋。</div>
+          <button class="btn blue disabled" id="finishClassifyBtn" onclick="startExperiment()">进入淀粉侦探实验</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="experimentPage">
+      <div class="card">
+        <div class="content">
+          <div class="badge">任务三 · 淀粉侦探实验室</div>
+          <h2>找出含淀粉的食物</h2>
+          <p class="subtitle">根据已有知识先做判断，再点击食物滴加碘液验证。找到 3 个含淀粉食物即可过关。</p>
+          <div class="progress-wrap">
+            <div class="progress-label"><span id="experimentProgress">已找到 0 / 3</span><span id="experimentScore">实验得分 0</span></div>
+            <div class="progress"><div class="progress-bar" id="experimentBar"></div></div>
+          </div>
+          <div class="experiment-grid" id="sampleGrid"></div>
+          <div class="feedback show" id="experimentFeedback"><strong>实验提示：</strong>请找出米饭、土豆、面包等含淀粉较多的食物，不需要把所有食物都点完。</div>
+          <button class="btn blue disabled" id="finishExperimentBtn" onclick="startBreakfast()">进入早餐搭配挑战</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="breakfastPage">
+      <div class="card">
+        <div class="content">
+          <div class="badge">任务四 · 营养早餐搭配挑战</div>
+          <h2>选择 4 种食物组成早餐</h2>
+          <p class="subtitle">尽量包含主食类、蛋白质类和蔬果类，少选高油高糖食物。</p>
+          <div class="progress-label"><span id="breakfastCount">已选 0 / 4</span><span id="breakfastScore">早餐得分 0</span></div>
+          <div class="breakfast-grid" id="breakfastGrid"></div>
+          <div class="feedback show" id="breakfastFeedback"><strong>搭配提示：</strong>请选择 4 种食物。</div>
+          <button class="btn orange disabled" id="finishBreakfastBtn" onclick="finishAll()">完成挑战，查看成绩</button>
         </div>
       </div>
     </section>
@@ -323,177 +529,494 @@
     <section class="page" id="resultPage">
       <div class="card">
         <div class="content">
-          <div class="badge">🎉 闯关完成</div>
+          <div class="badge">🎉 挑战完成</div>
           <div class="score-circle" id="scoreCircle"><div class="score-text"><span class="num" id="finalScore">0</span><span>分</span></div></div>
-          <h2 class="result-title" id="resultTitle">营养小达人</h2>
-          <p class="result-desc" id="resultDesc"></p>
-          <div class="review">
-            <div class="review-title">本节课重点回顾</div>
-            <ul>
-              <li>蛋白质有助于身体生长发育。</li>
-              <li>米饭、馒头、土豆等食物含有较多淀粉。</li>
-              <li>淀粉遇到碘液通常会变蓝或蓝黑色。</li>
-              <li>合理饮食要注意多种食物搭配。</li>
-            </ul>
+          <h2 id="finalTitle" style="text-align:center">金牌营养侦探</h2>
+          <p class="subtitle" id="finalDesc" style="text-align:center"></p>
+          <div class="summary-box">
+            <strong style="color:var(--deep)">本次成绩明细</strong>
+            <div class="pill-row" id="scoreDetails"></div>
+            <p class="small-note" id="timeUsed"></p>
           </div>
-          <button class="btn" onclick="restartQuiz()">再挑战一次</button>
+          <input class="nickname" id="nicknameInput" placeholder="请输入你的侦探昵称，如：小侦探A" maxlength="12" />
+          <button class="btn" onclick="saveRank()">保存成绩并查看排行榜</button>
+          <button class="btn secondary" onclick="restart()">再挑战一次</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="rankPage">
+      <div class="card">
+        <div class="content">
+          <div class="badge">🏆 本地排行榜</div>
+          <h2>营养侦探排行榜</h2>
+          <p class="subtitle">排行榜保存在当前浏览器中，适合现场展示。后续可接入云数据库扩展为班级排行榜。</p>
+          <table class="rank-table">
+            <thead><tr><th>排名</th><th>昵称</th><th>分数</th><th>用时</th><th>称号</th></tr></thead>
+            <tbody id="rankBody"></tbody>
+          </table>
+          <button class="btn secondary" onclick="showPage('homePage')">返回首页</button>
+          <button class="btn orange" onclick="clearRank()">清空排行榜</button>
         </div>
       </div>
     </section>
   </main>
+  <div class="toast" id="toast"></div>
 
   <script>
-    const questions = [
-      {
-        level: "第 1 关",
-        title: "营养成分我会认",
-        q: "下列哪类食物主要富含蛋白质？",
-        options: ["鸡蛋、牛奶、鱼肉", "米饭、面条、土豆", "苹果、青菜、西瓜"],
-        answer: 0,
-        explain: "鸡蛋、牛奶、鱼肉中含有较丰富的蛋白质，有助于身体生长发育。"
-      },
-      {
-        level: "第 1 关",
-        title: "营养成分我会认",
-        q: "米饭、馒头、土豆中含量较多的营养成分是？",
-        options: ["维生素", "淀粉", "无机盐"],
-        answer: 1,
-        explain: "米饭、馒头、土豆等食物中含有较多淀粉，能为人体提供能量。"
-      },
-      {
-        level: "第 2 关",
-        title: "实验现象我知道",
-        q: "淀粉遇到碘液后，通常会变成什么颜色？",
-        options: ["蓝色或蓝黑色", "红色", "黄色"],
-        answer: 0,
-        explain: "淀粉遇碘液通常会变蓝或蓝黑色，这是检测淀粉的常见方法。"
-      },
-      {
-        level: "第 3 关",
-        title: "合理饮食我会选",
-        q: "蔬菜和水果主要可以为人体补充什么？",
-        options: ["脂肪", "维生素和无机盐", "酒精"],
-        answer: 1,
-        explain: "蔬菜和水果通常富含维生素和无机盐，有助于维持身体健康。"
-      },
-      {
-        level: "第 3 关",
-        title: "合理饮食我会选",
-        q: "下列哪种早餐搭配更合理？",
-        options: ["只吃薯片和可乐", "牛奶、鸡蛋、面包和水果", "只吃糖果"],
-        answer: 1,
-        explain: "合理早餐应尽量包含主食、蛋白质类食物和蔬果，做到多样搭配。"
-      }
+    const quizQuestions = [
+      {q:"下列哪类食物主要富含蛋白质？",options:["鸡蛋、牛奶、鱼肉","米饭、面包、土豆","苹果、青菜、西瓜"],answer:0,explain:"鸡蛋、牛奶、鱼肉中含有较丰富的蛋白质，蛋白质有助于身体生长发育。"},
+      {q:"米饭、馒头、土豆中含量较多的营养成分是？",options:["维生素","淀粉","无机盐"],answer:1,explain:"米饭、馒头、土豆等食物中含有较多淀粉，淀粉属于糖类，可以为人体提供能量。"},
+      {q:"淀粉遇到碘液后通常会出现什么现象？",options:["变蓝或蓝黑色","变红色","没有任何变化"],answer:0,explain:"淀粉遇到碘液后通常会变蓝或蓝黑色，这是检测淀粉的常见实验现象。"},
+      {q:"蔬菜和水果主要可以帮助人体补充什么？",options:["维生素和无机盐","酒精","大量脂肪"],answer:0,explain:"蔬菜和水果通常富含维生素和无机盐，有助于维持身体健康。"},
+      {q:"下面哪种说法更科学？",options:["米饭只含有淀粉","米饭主要含有较多淀粉","米饭没有营养"],answer:1,explain:"多数食物都含有多种营养物质，科学表达应是“主要富含”或“含量较多”。"}
     ];
 
-    let current = 0;
-    let score = 0;
-    let answered = false;
+    const classifyFoods = [
+      {id:1,name:"鸡蛋",emoji:"🥚",type:"蛋白质",tip:"鸡蛋主要富含蛋白质。"},
+      {id:2,name:"鱼肉",emoji:"🐟",type:"蛋白质",tip:"鱼肉主要富含蛋白质。"},
+      {id:3,name:"米饭",emoji:"🍚",type:"糖类/淀粉",tip:"米饭主要富含糖类，也含有较多淀粉。"},
+      {id:4,name:"土豆",emoji:"🥔",type:"糖类/淀粉",tip:"土豆含有较多淀粉。"},
+      {id:5,name:"坚果",emoji:"🥜",type:"脂肪",tip:"坚果中脂肪含量较高，也含有蛋白质等营养。"},
+      {id:6,name:"食用油",emoji:"🫒",type:"脂肪",tip:"食用油主要提供脂肪。"},
+      {id:7,name:"苹果",emoji:"🍎",type:"维生素",tip:"苹果可以帮助补充维生素等营养。"},
+      {id:8,name:"青菜",emoji:"🥬",type:"维生素",tip:"青菜通常富含维生素和膳食纤维。"},
+      {id:9,name:"牛奶",emoji:"🥛",type:"无机盐",tip:"牛奶含有钙等无机盐，也含有蛋白质。"},
+      {id:10,name:"矿泉水",emoji:"💧",type:"水",tip:"水参与人体代谢和营养运输。"}
+    ];
+    const categories = ["蛋白质","糖类/淀粉","脂肪","维生素","无机盐","水"];
 
-    function showPage(id) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const samples = [
+      {name:"米饭",emoji:"🍚",starch:true},
+      {name:"土豆",emoji:"🥔",starch:true},
+      {name:"面包",emoji:"🍞",starch:true},
+      {name:"苹果",emoji:"🍎",starch:false},
+      {name:"黄瓜",emoji:"🥒",starch:false},
+      {name:"牛奶",emoji:"🥛",starch:false}
+    ];
+
+    const breakfastFoods = [
+      {name:"牛奶",emoji:"🥛",group:"protein"},
+      {name:"鸡蛋",emoji:"🥚",group:"protein"},
+      {name:"豆浆",emoji:"🥣",group:"protein"},
+      {name:"面包",emoji:"🍞",group:"staple"},
+      {name:"米粥",emoji:"🍚",group:"staple"},
+      {name:"玉米",emoji:"🌽",group:"staple"},
+      {name:"苹果",emoji:"🍎",group:"fruit"},
+      {name:"青菜",emoji:"🥬",group:"fruit"},
+      {name:"薯片",emoji:"🍟",group:"junk"},
+      {name:"可乐",emoji:"🥤",group:"junk"},
+      {name:"糖果",emoji:"🍬",group:"junk"},
+      {name:"炸鸡",emoji:"🍗",group:"junk"}
+    ];
+
+    let state = {};
+    let dragState = null;
+
+    function resetState(){
+      state = {
+        startTime:0,
+        quizIndex:0,
+        totalScore:0,
+        quizScore:0,
+        classifyScore:0,
+        experimentScore:0,
+        breakfastScore:0,
+        classifiedCount:0,
+        experimentCount:0,
+        foundStarch:0,
+        breakfastSelected:[],
+        classifyPlaced:{}
+      };
+      categories.forEach(c=>state.classifyPlaced[c]=[]);
+      samples.forEach(s=>s.tested=false);
+      classifyFoods.forEach(f=>f.done=false);
+    }
+    resetState();
+
+    function showPage(id){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
     }
 
-    function startQuiz() {
-      current = 0;
-      score = 0;
+    function toast(text){
+      const el = document.getElementById('toast');
+      el.textContent = text;
+      el.classList.add('show');
+      setTimeout(()=>el.classList.remove('show'), 1700);
+    }
+
+    function startAll(){
+      resetState();
+      state.startTime = Date.now();
       showPage('quizPage');
       renderQuestion();
     }
 
-    function renderQuestion() {
-      answered = false;
-      const item = questions[current];
-      document.getElementById('levelBadge').textContent = item.level;
-      document.getElementById('levelTitle').textContent = item.title;
-      document.getElementById('questionText').textContent = item.q;
-      document.getElementById('progressText').textContent = `${current + 1} / ${questions.length}`;
-      document.getElementById('scoreText').textContent = `得分 ${score}`;
-      document.getElementById('progressBar').style.width = `${(current) / questions.length * 100}%`;
+    function renderQuestion(){
+      const q = quizQuestions[state.quizIndex];
+      document.getElementById('quizProgress').textContent = `${state.quizIndex+1} / ${quizQuestions.length}`;
+      document.getElementById('scoreLabel').textContent = `总分 ${state.totalScore}`;
+      document.getElementById('quizBar').style.width = `${state.quizIndex / quizQuestions.length * 100}%`;
+      document.getElementById('questionText').textContent = q.q;
       document.getElementById('feedbackBox').className = 'feedback';
       document.getElementById('feedbackBox').innerHTML = '';
-      document.getElementById('nextBtn').style.display = 'none';
-
+      document.getElementById('nextQuestionBtn').style.display = 'none';
       const box = document.getElementById('optionsBox');
       box.innerHTML = '';
-      item.options.forEach((text, index) => {
+      q.options.forEach((opt, i)=>{
         const btn = document.createElement('button');
         btn.className = 'option';
-        btn.textContent = `${String.fromCharCode(65 + index)}. ${text}`;
-        btn.onclick = () => chooseAnswer(index);
+        btn.textContent = `${String.fromCharCode(65+i)}. ${opt}`;
+        btn.onclick = ()=>chooseAnswer(i);
         box.appendChild(btn);
       });
     }
 
-    function chooseAnswer(index) {
-      if (answered) return;
-      answered = true;
-      const item = questions[current];
+    function chooseAnswer(i){
+      const q = quizQuestions[state.quizIndex];
       const opts = document.querySelectorAll('.option');
-      opts.forEach(o => o.classList.add('disabled'));
-
-      if (index === item.answer) {
-        opts[index].classList.add('correct');
-        score += 20;
-        document.getElementById('feedbackBox').innerHTML = `<strong>回答正确！</strong><br>${item.explain}`;
-      } else {
-        opts[index].classList.add('wrong');
-        opts[item.answer].classList.add('correct');
-        document.getElementById('feedbackBox').innerHTML = `<strong>再想一想。</strong><br>正确答案是 ${String.fromCharCode(65 + item.answer)}。${item.explain}`;
+      opts.forEach(o=>o.classList.add('disabled'));
+      if(i === q.answer){
+        opts[i].classList.add('correct');
+        state.quizScore += 8;
+        state.totalScore += 8;
+        document.getElementById('feedbackBox').innerHTML = `<strong>回答正确！</strong><br>${q.explain}`;
+      }else{
+        opts[i].classList.add('wrong');
+        opts[q.answer].classList.add('correct');
+        document.getElementById('feedbackBox').innerHTML = `<strong>再想一想。</strong><br>正确答案是 ${String.fromCharCode(65+q.answer)}。${q.explain}`;
       }
-      document.getElementById('scoreText').textContent = `得分 ${score}`;
+      document.getElementById('scoreLabel').textContent = `总分 ${state.totalScore}`;
       document.getElementById('feedbackBox').classList.add('show');
-      document.getElementById('nextBtn').style.display = 'block';
+      document.getElementById('nextQuestionBtn').style.display = 'block';
     }
 
-    function nextQuestion() {
-      current++;
-      if (current >= questions.length) {
-        showResult();
-      } else {
+    function nextQuestion(){
+      state.quizIndex++;
+      if(state.quizIndex >= quizQuestions.length){
+        document.getElementById('quizBar').style.width = '100%';
+        startClassify();
+      }else{
         renderQuestion();
       }
     }
 
-    function showResult() {
-      document.getElementById('progressBar').style.width = '100%';
-      showPage('resultPage');
-      document.getElementById('finalScore').textContent = score;
-      document.getElementById('scoreCircle').style.background = `conic-gradient(var(--green) 0deg, var(--green) ${score / 100 * 360}deg, #e8f1ed ${score / 100 * 360}deg)`;
+    function startClassify(){
+      showPage('classifyPage');
+      renderClassify();
+    }
 
-      let title = '';
-      let desc = '';
-      if (score >= 80) {
-        title = '恭喜你，营养小达人！';
-        desc = '你已经很好地掌握了本节课的核心知识，可以尝试为自己设计一份营养均衡的早餐。';
-        createConfetti();
-      } else if (score >= 40) {
-        title = '继续加油，营养探索者！';
-        desc = '你已经掌握了一部分知识，建议再复习“淀粉检测”和“合理饮食搭配”。';
-      } else {
-        title = '再挑战一次吧！';
-        desc = '建议重新观看微课，重点关注各种营养成分的来源和淀粉遇碘液变蓝的实验。';
+    function renderClassify(){
+      document.getElementById('classifyProgress').textContent = `${state.classifiedCount} / ${classifyFoods.length}`;
+      document.getElementById('classifyScore').textContent = `分类得分 ${state.classifyScore}`;
+      document.getElementById('classifyBar').style.width = `${state.classifiedCount / classifyFoods.length * 100}%`;
+
+      const foodBox = document.getElementById('foodCards');
+      foodBox.innerHTML = '';
+      classifyFoods.filter(f=>!f.done).forEach(food=>{
+        const div = document.createElement('div');
+        div.className = 'draggable-food';
+        div.dataset.foodId = food.id;
+        div.innerHTML = `<span class="emoji">${food.emoji}</span><span>${food.name}</span>`;
+        attachPointerDrag(div, food);
+        foodBox.appendChild(div);
+      });
+
+      const zoneBox = document.getElementById('zones');
+      zoneBox.innerHTML = '';
+      categories.forEach(cat=>{
+        const div = document.createElement('div');
+        div.className = 'drop-zone';
+        div.dataset.zone = cat;
+        const chips = state.classifyPlaced[cat].map(f=>`<span class="placed-chip">${f.emoji} ${f.name}</span>`).join('');
+        div.innerHTML = `<div class="zone-title">${cat}</div><div class="placed-list">${chips || '<div class="hint-empty">拖到这里</div>'}</div>`;
+        zoneBox.appendChild(div);
+      });
+
+      document.getElementById('finishClassifyBtn').classList.toggle('disabled', state.classifiedCount < classifyFoods.length);
+    }
+
+    function attachPointerDrag(el, food){
+      el.addEventListener('pointerdown', (e)=>{
+        e.preventDefault();
+        const rect = el.getBoundingClientRect();
+        const ghost = document.createElement('div');
+        ghost.className = 'drag-ghost';
+        ghost.innerHTML = `<span class="emoji">${food.emoji}</span><span>${food.name}</span>`;
+        document.body.appendChild(ghost);
+        positionGhost(ghost, e.clientX, e.clientY);
+        el.classList.add('dragging-source');
+        dragState = {food, sourceEl:el, ghost, activeZone:null, pointerId:e.pointerId};
+        try{el.setPointerCapture(e.pointerId);}catch(err){}
+      });
+      el.addEventListener('pointermove', onDragMove);
+      el.addEventListener('pointerup', onDragEnd);
+      el.addEventListener('pointercancel', onDragEnd);
+    }
+
+    function positionGhost(ghost, x, y){
+      ghost.style.left = x + 'px';
+      ghost.style.top = y + 'px';
+    }
+
+    function onDragMove(e){
+      if(!dragState || dragState.pointerId !== e.pointerId) return;
+      e.preventDefault();
+      positionGhost(dragState.ghost, e.clientX, e.clientY);
+      document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('active'));
+      const under = document.elementFromPoint(e.clientX, e.clientY);
+      const zone = under ? under.closest('.drop-zone') : null;
+      if(zone){
+        zone.classList.add('active');
+        dragState.activeZone = zone.dataset.zone;
+      }else{
+        dragState.activeZone = null;
       }
-      document.getElementById('resultTitle').textContent = title;
-      document.getElementById('resultDesc').textContent = desc;
     }
 
-    function restartQuiz() {
-      startQuiz();
+    function onDragEnd(e){
+      if(!dragState || dragState.pointerId !== e.pointerId) return;
+      e.preventDefault();
+      document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('active'));
+      const {food, sourceEl, ghost, activeZone} = dragState;
+      ghost.remove();
+      sourceEl.classList.remove('dragging-source');
+
+      if(!activeZone){
+        document.getElementById('classifyFeedback').innerHTML = `<strong>没有放到小屋里。</strong>请再试一次，把 ${food.name} 拖到对应的小框里。`;
+        dragState = null;
+        return;
+      }
+
+      if(activeZone === food.type){
+        food.done = true;
+        state.classifiedCount++;
+        state.classifyScore += 3;
+        state.totalScore += 3;
+        state.classifyPlaced[activeZone].push(food);
+        document.getElementById('classifyFeedback').innerHTML = `<strong>分类正确！</strong>${food.tip}`;
+      }else{
+        document.getElementById('classifyFeedback').innerHTML = `<strong>再想一想。</strong>${food.tip}`;
+      }
+      dragState = null;
+      renderClassify();
     }
 
-    function createConfetti() {
-      const colors = ['#41b883', '#ff9f43', '#4dabf7', '#ffe08a', '#ff6b6b'];
-      for (let i = 0; i < 46; i++) {
+    function startExperiment(){
+      showPage('experimentPage');
+      state.experimentScore = 0;
+      state.experimentCount = 0;
+      state.foundStarch = 0;
+      samples.forEach(s=>s.tested=false);
+      renderExperiment();
+    }
+
+    function renderExperiment(){
+      const targetCount = samples.filter(s=>s.starch).length;
+      document.getElementById('experimentProgress').textContent = `已找到 ${state.foundStarch} / ${targetCount}`;
+      document.getElementById('experimentScore').textContent = `实验得分 ${state.experimentScore}`;
+      document.getElementById('experimentBar').style.width = `${state.foundStarch / targetCount * 100}%`;
+
+      const grid = document.getElementById('sampleGrid');
+      grid.innerHTML = '';
+      samples.forEach((s, i)=>{
+        const div = document.createElement('div');
+        div.className = 'sample' + (s.tested ? ' tested ' : '') + (s.tested && s.starch ? 'blue-react' : '') + (s.tested && !s.starch ? 'no-react' : '');
+        div.innerHTML = `<span class="drop-icon">💧</span><span class="emoji">${s.emoji}</span><span class="name">${s.name}</span>`;
+        div.onclick = ()=>testSample(i);
+        grid.appendChild(div);
+      });
+
+      document.getElementById('finishExperimentBtn').classList.toggle('disabled', state.foundStarch < targetCount);
+    }
+
+    function testSample(i){
+      const s = samples[i];
+      if(s.tested) return;
+
+      s.tested = true;
+      state.experimentCount++;
+
+      if(s.starch){
+        state.experimentScore += 6;
+        state.totalScore += 6;
+        state.foundStarch++;
+        document.getElementById('experimentFeedback').innerHTML = `<strong>发现淀粉！</strong>${s.name} 滴加碘液后出现蓝色或蓝黑色，说明它含有较多淀粉。`;
+      }else{
+        document.getElementById('experimentFeedback').innerHTML = `<strong>无明显蓝色变化。</strong>${s.name} 不是主要淀粉类食物。请继续寻找含淀粉的食物。`;
+      }
+
+      const targetCount = samples.filter(item=>item.starch).length;
+      if(state.foundStarch >= targetCount){
+        document.getElementById('experimentFeedback').innerHTML += `<br><strong>实验任务完成！</strong>你已经找出了 3 个含淀粉较多的食物，可以进入下一关。`;
+      }
+
+      renderExperiment();
+    }
+
+    function startBreakfast(){
+      showPage('breakfastPage');
+      state.breakfastSelected = [];
+      state.breakfastScore = 0;
+      renderBreakfast();
+    }
+
+    function renderBreakfast(){
+      document.getElementById('breakfastCount').textContent = `已选 ${state.breakfastSelected.length} / 4`;
+      document.getElementById('breakfastScore').textContent = `早餐得分 ${state.breakfastScore}`;
+      const grid = document.getElementById('breakfastGrid');
+      grid.innerHTML = '';
+      breakfastFoods.forEach((food, i)=>{
+        const selected = state.breakfastSelected.includes(i);
+        const div = document.createElement('div');
+        div.className = 'select-card' + (selected ? ' selected' : '');
+        div.innerHTML = `<span class="emoji">${food.emoji}</span><span>${food.name}</span>`;
+        div.onclick = ()=>toggleBreakfast(i);
+        grid.appendChild(div);
+      });
+      if(state.breakfastSelected.length === 4){
+        evaluateBreakfast(false);
+        document.getElementById('finishBreakfastBtn').classList.remove('disabled');
+      }else{
+        document.getElementById('finishBreakfastBtn').classList.add('disabled');
+      }
+    }
+
+    function toggleBreakfast(i){
+      const idx = state.breakfastSelected.indexOf(i);
+      if(idx >= 0){
+        state.breakfastSelected.splice(idx, 1);
+      }else{
+        if(state.breakfastSelected.length >= 4){
+          toast('最多选择 4 种食物');
+          return;
+        }
+        state.breakfastSelected.push(i);
+      }
+      state.breakfastScore = 0;
+      renderBreakfast();
+    }
+
+    function evaluateBreakfast(addScore){
+      const selected = state.breakfastSelected.map(i=>breakfastFoods[i]);
+      const groups = selected.map(f=>f.group);
+      const hasStaple = groups.includes('staple');
+      const hasProtein = groups.includes('protein');
+      const hasFruit = groups.includes('fruit');
+      const junkCount = groups.filter(g=>g==='junk').length;
+      let score = 0, msg = '';
+      if(hasStaple && hasProtein && hasFruit && junkCount <= 1){
+        score = 12;
+        msg = '<strong>搭配很棒！</strong>这份早餐包含主食、蛋白质类食物和蔬果，营养比较均衡。';
+      }else if((hasStaple && hasProtein) || (hasStaple && hasFruit) || (hasProtein && hasFruit)){
+        score = 7;
+        msg = '<strong>搭配还可以。</strong>这份早餐有一定营养，但还不够均衡，建议补充缺少的食物类别。';
+      }else{
+        score = 3;
+        msg = '<strong>还需要优化。</strong>这份早餐营养结构不够合理，建议减少零食饮料，增加主食、蛋白质类食物和蔬果。';
+      }
+      if(junkCount >= 2){
+        score = Math.max(3, score - 3);
+        msg += '<br>注意：高油高糖食物较多，不建议作为日常早餐主要选择。';
+      }
+      state.breakfastScore = score;
+      document.getElementById('breakfastScore').textContent = `早餐得分 ${state.breakfastScore}`;
+      document.getElementById('breakfastFeedback').innerHTML = msg;
+      if(addScore) state.totalScore += state.breakfastScore;
+    }
+
+    function finishAll(){
+      evaluateBreakfast(true);
+      const used = Math.floor((Date.now() - state.startTime) / 1000);
+      state.totalScore = Math.min(100, state.totalScore);
+      showResult(used);
+    }
+
+    function getTitle(score){
+      if(score >= 90) return '金牌营养侦探';
+      if(score >= 80) return '优秀营养侦探';
+      if(score >= 70) return '进阶营养侦探';
+      if(score >= 60) return '见习营养侦探';
+      return '继续训练的小侦探';
+    }
+    function getAdvice(score){
+      if(score >= 90) return '你已经很好地掌握了食物营养知识，可以尝试为家人设计一份营养均衡的早餐。';
+      if(score >= 70) return '你已经掌握了大部分知识，建议继续复习淀粉检测实验和营养搭配方法。';
+      return '建议重新观看微课，重点关注六大营养素、淀粉检测实验和合理饮食搭配。';
+    }
+    function formatTime(sec){
+      const m = Math.floor(sec/60), s = sec % 60;
+      return `${m}分${String(s).padStart(2,'0')}秒`;
+    }
+
+    function showResult(used){
+      showPage('resultPage');
+      document.getElementById('finalScore').textContent = state.totalScore;
+      document.getElementById('scoreCircle').style.background = `conic-gradient(var(--green) 0deg,var(--green) ${state.totalScore/100*360}deg,#e8f1ed ${state.totalScore/100*360}deg)`;
+      document.getElementById('finalTitle').textContent = getTitle(state.totalScore);
+      document.getElementById('finalDesc').textContent = getAdvice(state.totalScore);
+      document.getElementById('scoreDetails').innerHTML = `
+        <span class="pill">知识闯关 ${state.quizScore}分</span>
+        <span class="pill">营养小屋 ${state.classifyScore}分</span>
+        <span class="pill">淀粉实验 ${state.experimentScore}分</span>
+        <span class="pill">早餐搭配 ${state.breakfastScore}分</span>
+      `;
+      document.getElementById('timeUsed').textContent = `完成用时：${formatTime(used)}`;
+      window.currentUsed = used;
+      if(state.totalScore >= 85) createConfetti();
+    }
+
+    function saveRank(){
+      const name = document.getElementById('nicknameInput').value.trim() || '匿名小侦探';
+      const entry = {name, score:state.totalScore, time:window.currentUsed || 0, title:getTitle(state.totalScore)};
+      const list = JSON.parse(localStorage.getItem('nutritionDetectiveRanks') || '[]');
+      list.push(entry);
+      list.sort((a,b)=> b.score - a.score || a.time - b.time);
+      localStorage.setItem('nutritionDetectiveRanks', JSON.stringify(list.slice(0,20)));
+      showRankPage();
+    }
+
+    function showRankPage(){
+      showPage('rankPage');
+      const list = JSON.parse(localStorage.getItem('nutritionDetectiveRanks') || '[]');
+      const body = document.getElementById('rankBody');
+      if(list.length === 0){
+        body.innerHTML = '<tr><td colspan="5">暂无成绩，快去完成一次挑战吧！</td></tr>';
+        return;
+      }
+      body.innerHTML = list.slice(0,10).map((e,i)=>`
+        <tr><td>${i+1}</td><td>${escapeHtml(e.name)}</td><td>${e.score}</td><td>${formatTime(e.time)}</td><td>${e.title}</td></tr>
+      `).join('');
+    }
+
+    function clearRank(){
+      if(confirm('确定清空本地排行榜吗？')){
+        localStorage.removeItem('nutritionDetectiveRanks');
+        showRankPage();
+      }
+    }
+
+    function restart(){
+      startAll();
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+    }
+
+    function createConfetti(){
+      const colors = ['#42b883','#ff9f43','#4dabf7','#ffe08a','#ff6b6b'];
+      for(let i=0;i<56;i++){
         const c = document.createElement('div');
         c.className = 'confetti';
-        c.style.left = Math.random() * 100 + 'vw';
-        c.style.background = colors[Math.floor(Math.random() * colors.length)];
-        c.style.animationDelay = Math.random() * 0.7 + 's';
-        c.style.transform = `rotate(${Math.random() * 180}deg)`;
+        c.style.left = Math.random()*100 + 'vw';
+        c.style.background = colors[Math.floor(Math.random()*colors.length)];
+        c.style.animationDelay = Math.random()*0.7 + 's';
+        c.style.transform = `rotate(${Math.random()*180}deg)`;
         document.body.appendChild(c);
-        setTimeout(() => c.remove(), 3600);
+        setTimeout(()=>c.remove(), 3600);
       }
     }
   </script>
