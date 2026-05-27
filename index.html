@@ -330,6 +330,23 @@
       background:#eafaf1;
       transform:translateY(-1px);
     }
+
+    .ai-textarea{
+      width:100%;
+      min-height:96px;
+      resize:vertical;
+      border:2px solid #e4eee9;
+      border-radius:18px;
+      padding:13px 14px;
+      font-size:15px;
+      line-height:1.6;
+      outline:none;
+      font-family:inherit;
+      background:#fff;
+      color:var(--text);
+    }
+    .ai-textarea:focus{border-color:var(--green)}
+
     .summary-box{
       background:#f8fffb;
       border:1px solid #e2f0e8;
@@ -456,7 +473,7 @@
           </div>
           <button class="btn" onclick="startAll()">开始挑战</button>
           <button class="btn secondary" onclick="showRankPage()">查看排行榜</button>
-          <p class="small-note">总分100分｜知识闯关40分 + 营养小屋30分 + 淀粉实验18分 + 早餐搭配12分</p>
+          <p class="small-note">总分100分｜知识闯关40分 + 营养小屋30分 + 淀粉实验18分 + 早餐搭配12分｜AI智能反馈</p>
         </div>
       </div>
     </section>
@@ -521,7 +538,32 @@
           <div class="progress-label"><span id="breakfastCount">已选 0 / 4</span><span id="breakfastScore">早餐得分 0</span></div>
           <div class="breakfast-grid" id="breakfastGrid"></div>
           <div class="feedback show" id="breakfastFeedback"><strong>搭配提示：</strong>请选择 4 种食物。</div>
-          <button class="btn orange disabled" id="finishBreakfastBtn" onclick="finishAll()">完成挑战，查看成绩</button>
+          <button class="btn orange disabled" id="finishBreakfastBtn" onclick="startAIAdvice()">获取AI营养建议</button>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="page" id="aiPage">
+      <div class="card">
+        <div class="content">
+          <div class="badge">🤖 AI营养小助手</div>
+          <h2>从早餐搭配到个性化建议</h2>
+          <p class="subtitle">营养小助手会根据你刚才选择的早餐，生成一份个性化优化建议。你也可以输入自己真实的一餐饮食，看看怎样搭配更均衡。</p>
+
+          <div class="summary-box">
+            <strong style="color:var(--deep)">你刚才选择的早餐</strong>
+            <div class="pill-row" id="aiBreakfastPills"></div>
+            <div class="feedback show" id="aiAutoAdvice"></div>
+          </div>
+
+          <h2 style="font-size:20px;margin-top:18px;">输入你真实的一餐</h2>
+          <p class="subtitle" style="margin-top:6px;">例如：牛奶、鸡蛋、面包、苹果</p>
+          <textarea id="aiMealInput" class="ai-textarea" placeholder="请输入你今天吃了什么，例如：豆浆、油条、鸡蛋"></textarea>
+          <button class="btn blue" onclick="generateCustomAdvice()">生成AI营养建议</button>
+          <div class="feedback" id="aiCustomAdvice"></div>
+
+          <button class="btn" onclick="finishAll()">查看成绩与称号</button>
         </div>
       </div>
     </section>
@@ -550,7 +592,7 @@
         <div class="content">
           <div class="badge">🏆 本地排行榜</div>
           <h2>营养侦探排行榜</h2>
-          <p class="subtitle">排行榜保存在当前浏览器中，适合现场展示。后续可接入云数据库扩展为班级排行榜。</p>
+          <p class="subtitle">排行榜优先读取云端数据，可实现不同手机同步排名；网络异常时自动使用本地备用排行榜。</p>
           <table class="rank-table">
             <thead><tr><th>排名</th><th>昵称</th><th>分数</th><th>用时</th><th>称号</th></tr></thead>
             <tbody id="rankBody"></tbody>
@@ -563,7 +605,15 @@
   </main>
   <div class="toast" id="toast"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+
+    const SUPABASE_URL = "https://nlvnseauihumaucerhhg.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_dPqtKFUe8wj2ZPMWUhRFTw_UrSz3jWw";
+    const supabaseClient = window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+      : null;
+
     const quizQuestions = [
       {q:"下列哪类食物主要富含蛋白质？",options:["鸡蛋、牛奶、鱼肉","米饭、面包、土豆","苹果、青菜、西瓜"],answer:0,explain:"鸡蛋、牛奶、鱼肉中含有较丰富的蛋白质，蛋白质有助于身体生长发育。"},
       {q:"米饭、馒头、土豆中含量较多的营养成分是？",options:["维生素","淀粉","无机盐"],answer:1,explain:"米饭、馒头、土豆等食物中含有较多淀粉，淀粉属于糖类，可以为人体提供能量。"},
@@ -626,6 +676,7 @@
         experimentCount:0,
         foundStarch:0,
         breakfastSelected:[],
+        breakfastScoreAdded:false,
         classifyPlaced:{}
       };
       categories.forEach(c=>state.classifyPlaced[c]=[]);
@@ -924,11 +975,80 @@
       state.breakfastScore = score;
       document.getElementById('breakfastScore').textContent = `早餐得分 ${state.breakfastScore}`;
       document.getElementById('breakfastFeedback').innerHTML = msg;
-      if(addScore) state.totalScore += state.breakfastScore;
+      if(addScore && !state.breakfastScoreAdded){ state.totalScore += state.breakfastScore; state.breakfastScoreAdded = true; }
     }
 
-    function finishAll(){
+
+    function startAIAdvice(){
       evaluateBreakfast(true);
+      showPage('aiPage');
+      renderAIAdvice();
+    }
+
+    function renderAIAdvice(){
+      const selected = state.breakfastSelected.map(i=>breakfastFoods[i]);
+      const pillBox = document.getElementById('aiBreakfastPills');
+      pillBox.innerHTML = selected.map(f=>`<span class="pill">${f.emoji} ${f.name}</span>`).join('');
+      const advice = buildMealAdvice(selected.map(f=>f.name).join('、'));
+      document.getElementById('aiAutoAdvice').innerHTML = `<strong>AI建议：</strong>${advice}`;
+      document.getElementById('aiCustomAdvice').className = 'feedback';
+      document.getElementById('aiCustomAdvice').innerHTML = '';
+    }
+
+    function generateCustomAdvice(){
+      const text = document.getElementById('aiMealInput').value.trim();
+      if(!text){
+        toast('请先输入一餐饮食内容');
+        return;
+      }
+      const advice = buildMealAdvice(text);
+      const box = document.getElementById('aiCustomAdvice');
+      box.innerHTML = `<strong>AI建议：</strong>${advice}`;
+      box.classList.add('show');
+    }
+
+    function buildMealAdvice(text){
+      const meal = String(text || '').toLowerCase();
+
+      const proteinWords = ['鸡蛋','蛋','牛奶','奶','鱼','鱼肉','肉','豆浆','豆腐','豆制品','虾','鸡肉'];
+      const stapleWords = ['米饭','饭','面包','馒头','土豆','玉米','米粥','粥','面条','包子','油条','饼'];
+      const fruitWords = ['苹果','香蕉','橙子','水果','青菜','蔬菜','黄瓜','番茄','西红柿','生菜','白菜'];
+      const junkWords = ['薯片','可乐','糖果','炸鸡','奶茶','辣条','巧克力','蛋糕','甜饮料'];
+
+      const hasProtein = proteinWords.some(w=>meal.includes(w));
+      const hasStaple = stapleWords.some(w=>meal.includes(w));
+      const hasFruit = fruitWords.some(w=>meal.includes(w));
+      const hasJunk = junkWords.some(w=>meal.includes(w));
+
+      let parts = [];
+      if(hasStaple) parts.push('包含主食类食物，可以为身体提供能量');
+      if(hasProtein) parts.push('包含蛋白质类食物，有助于身体生长和组织修复');
+      if(hasFruit) parts.push('包含蔬菜或水果，有助于补充维生素、无机盐和膳食纤维');
+
+      if(parts.length === 0){
+        return '我暂时没有识别出明显的主食、蛋白质类或蔬果类食物。建议尝试输入更具体的食物名称，如“牛奶、鸡蛋、面包、苹果”。';
+      }
+
+      let advice = '这份搭配' + parts.join('，') + '。';
+
+      if(hasStaple && hasProtein && hasFruit && !hasJunk){
+        advice += '整体搭配比较均衡，可以作为较好的早餐参考。';
+      }else{
+        advice += '还可以继续优化：';
+        let tips = [];
+        if(!hasStaple) tips.push('增加米饭、面包、玉米或米粥等主食类食物');
+        if(!hasProtein) tips.push('增加鸡蛋、牛奶、豆浆或鱼肉等蛋白质来源');
+        if(!hasFruit) tips.push('增加水果或蔬菜，补充维生素和膳食纤维');
+        if(hasJunk) tips.push('减少薯片、可乐、糖果、炸鸡等高油高糖食物');
+        advice += tips.join('；') + '。';
+      }
+
+      advice += '以上建议属于食品营养科普提示，可帮助你把课堂知识应用到日常饮食中。';
+      return advice;
+    }
+
+
+    function finishAll(){
       const used = Math.floor((Date.now() - state.startTime) / 1000);
       state.totalScore = Math.min(100, state.totalScore);
       showResult(used);
@@ -961,38 +1081,110 @@
         <span class="pill">知识闯关 ${state.quizScore}分</span>
         <span class="pill">营养小屋 ${state.classifyScore}分</span>
         <span class="pill">淀粉实验 ${state.experimentScore}分</span>
-        <span class="pill">早餐搭配 ${state.breakfastScore}分</span>
+        <span class="pill">早餐搭配 ${state.breakfastScore}分</span><span class="pill">AI建议 已生成</span>
       `;
       document.getElementById('timeUsed').textContent = `完成用时：${formatTime(used)}`;
       window.currentUsed = used;
       if(state.totalScore >= 85) createConfetti();
     }
 
-    function saveRank(){
+    async function saveRank(){
       const name = document.getElementById('nicknameInput').value.trim() || '匿名小侦探';
-      const entry = {name, score:state.totalScore, time:window.currentUsed || 0, title:getTitle(state.totalScore)};
+      const entry = {
+        nickname: name.slice(0, 20),
+        score: state.totalScore,
+        time_used: window.currentUsed || 0,
+        title: getTitle(state.totalScore)
+      };
+
+      if(supabaseClient){
+        try{
+          const { error } = await supabaseClient
+            .from('nutrition_rankings')
+            .insert([entry]);
+
+          if(error) throw error;
+
+          toast('成绩已上传到云排行榜');
+          await showRankPage();
+          return;
+        }catch(err){
+          console.error('云端保存失败：', err);
+          toast('云端保存失败，已保存到本地备用榜');
+        }
+      }
+
+      const localEntry = {
+        name,
+        score: state.totalScore,
+        time: window.currentUsed || 0,
+        title: getTitle(state.totalScore)
+      };
       const list = JSON.parse(localStorage.getItem('nutritionDetectiveRanks') || '[]');
-      list.push(entry);
+      list.push(localEntry);
       list.sort((a,b)=> b.score - a.score || a.time - b.time);
       localStorage.setItem('nutritionDetectiveRanks', JSON.stringify(list.slice(0,20)));
       showRankPage();
     }
 
-    function showRankPage(){
+    async function showRankPage(){
       showPage('rankPage');
-      const list = JSON.parse(localStorage.getItem('nutritionDetectiveRanks') || '[]');
       const body = document.getElementById('rankBody');
-      if(list.length === 0){
-        body.innerHTML = '<tr><td colspan="5">暂无成绩，快去完成一次挑战吧！</td></tr>';
-        return;
+
+      if(supabaseClient){
+        try{
+          const { data, error } = await supabaseClient
+            .from('nutrition_rankings')
+            .select('nickname, score, time_used, title, created_at')
+            .order('score', { ascending:false })
+            .order('time_used', { ascending:true })
+            .limit(10);
+
+          if(error) throw error;
+
+          if(!data || data.length === 0){
+            body.innerHTML = '<tr><td colspan="5">暂无云端成绩，快去完成一次挑战吧！</td></tr>';
+            return;
+          }
+
+          body.innerHTML = data.map((e,i)=>`
+            <tr>
+              <td>${i+1}</td>
+              <td>${escapeHtml(e.nickname)}</td>
+              <td>${e.score}</td>
+              <td>${formatTime(e.time_used)}</td>
+              <td>${e.title}</td>
+            </tr>
+          `).join('');
+          return;
+        }catch(err){
+          console.error('云排行榜读取失败：', err);
+          body.innerHTML = '<tr><td colspan="5">云排行榜暂时无法连接，正在显示本地备用榜。</td></tr>' + renderLocalRanks();
+          return;
+        }
       }
-      body.innerHTML = list.slice(0,10).map((e,i)=>`
-        <tr><td>${i+1}</td><td>${escapeHtml(e.name)}</td><td>${e.score}</td><td>${formatTime(e.time)}</td><td>${e.title}</td></tr>
+
+      body.innerHTML = renderLocalRanks();
+    }
+
+    function renderLocalRanks(){
+      const list = JSON.parse(localStorage.getItem('nutritionDetectiveRanks') || '[]');
+      if(list.length === 0){
+        return '<tr><td colspan="5">暂无成绩，快去完成一次挑战吧！</td></tr>';
+      }
+      return list.slice(0,10).map((e,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${escapeHtml(e.name)}</td>
+          <td>${e.score}</td>
+          <td>${formatTime(e.time)}</td>
+          <td>${e.title}</td>
+        </tr>
       `).join('');
     }
 
     function clearRank(){
-      if(confirm('确定清空本地排行榜吗？')){
+      if(confirm('确定清空本地备用排行榜吗？云端排行榜不会被清空。')){
         localStorage.removeItem('nutritionDetectiveRanks');
         showRankPage();
       }
